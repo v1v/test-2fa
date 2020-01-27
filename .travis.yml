@@ -1,0 +1,11 @@
+language: node_js
+node_js: lts/carbon
+addons:
+  apt:
+    packages:
+    - jq
+deploy:
+  provider: script
+  script: bash scripts/deploy.sh
+  on:
+    tags: true
