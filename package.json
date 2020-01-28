@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest test.js"
+    "test": "lerna run build && lerna run test",
+    "clean": "lerna exec -- rm -rf dist/",
+    "release": "lerna publish"
   },
   "author": "",
   "publishConfig": {
@@ -12,6 +14,11 @@
   },
   "license": "ISC",
   "devDependencies": {
-    "jest": "^25.1.0"
+    "jest": "^25.1.0",
+    "lerna": "^3.20.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:v1v/test-2fa.git"
   }
 }

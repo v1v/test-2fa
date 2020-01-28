@@ -4,6 +4,8 @@ addons:
   apt:
     packages:
     - jq
+script:
+  - npm run test
 deploy:
   provider: script
   script: bash scripts/deploy.sh
