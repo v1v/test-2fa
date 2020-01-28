@@ -2,10 +2,13 @@
   "packages": [
     "packages/*"
   ],
-  "version": "0.0.0",
+  "version": "1.1.1",
   "command": {
     "publish": {
-      "allowBranch": ["master", "lerna"],
+      "allowBranch": [
+        "master",
+        "lerna"
+      ],
       "message": "chore(release): publish %s"
     }
   }
