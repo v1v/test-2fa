@@ -12,12 +12,7 @@ if [ -n "${JENKINS_URL}" ] ||  [ -n "${TRAVIS}" ] ; then
     FLAG='--yes'
 fi
 
-# if lerna isn't installed by default
-if ! command -v lerna ; then
-    npm install --global lerna
-fi
-
 set -xe
 ## This is possible as TOTP code is used once and only once
-lerna publish --otp="${TOTP_CODE}" ${FLAG}
+npx lerna publish --otp="${TOTP_CODE}" ${FLAG}
 npm run github-release
