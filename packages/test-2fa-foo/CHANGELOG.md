@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0-rc.2](https://github.com/v1v/test-2fa/compare/test-2fa-foo@1.3.0-rc.1...test-2fa-foo@1.3.0-rc.2) (2020-01-29)
+
+
+### Features
+
+* **test-2fa-bar:** add more tests ([648a4d4](https://github.com/v1v/test-2fa/commit/648a4d4ec05d7d6eb274296ecbc0972884732943))
+
+
+
+
+
 # [1.3.0-rc.1](https://github.com/v1v/test-2fa/compare/test-2fa-foo@1.2.3-rc.6...test-2fa-foo@1.3.0-rc.1) (2020-01-29)
 
 
