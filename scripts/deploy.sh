@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -xe
 
 ### Potentially to be delegated to the CI context preparation
 echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
