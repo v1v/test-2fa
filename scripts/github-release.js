@@ -30,7 +30,7 @@ const https = require('https')
 const releaseAssets = require('gh-release-assets')
 const { name, version } = require('../packages/test-2fa-bar/package.json')
 
-const BUILD_DIR = path.join(__dirname, '../packages/test-2fa-bar/dist/bundles')
+const BUILD_DIR = path.join(__dirname, '../packages/test-2fa-bar')
 const GITHUB_URL = 'https://api.github.com/repos/v1v/test-2fa'
 
 function createRelease(token) {
@@ -40,7 +40,7 @@ function createRelease(token) {
     method: 'POST',
     headers: {
       Authorization: `token ${token}`,
-      'User-Agent': 'APM RUM JS agent' + version
+      'User-Agent': 'Test 2FA' + version
     }
   })
   /**
