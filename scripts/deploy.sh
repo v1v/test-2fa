@@ -31,3 +31,9 @@ set -xe
 npm run version
 npm run release-ci
 npm run github-release
+
+## Syncup
+git checkout -b "syncup-${TRAVIS_BRANCH}"
+git checkout master
+git rebase "syncup-${TRAVIS_BRANCH}"
+git push origin master
