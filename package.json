@@ -8,6 +8,7 @@
     "clean": "lerna exec -- rm -rf dist/",
     "prerelease": "npm test && npm run clean",
     "release": "sh ./scripts/deploy.sh",
+    "release-ci": "lerna publish --otp=${TOTP_CODE} ${FLAG}",
     "github-release": "node scripts/github-release"
   },
   "author": "",
