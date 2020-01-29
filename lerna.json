@@ -8,14 +8,16 @@
     "publish": {
       "allowBranch": [
         "master",
-        "lerna"
+        "lerna",
+        "meta-*"
       ],
       "message": "chore(release): publish"
     },
     "version": {
       "allowBranch": [
         "master",
-        "lerna"
+        "lerna",
+        "meta-*"
       ],
       "conventionalCommits": true,
       "gitRemote": "origin"

@@ -10,7 +10,8 @@ deploy:
   provider: script
   script: bash scripts/deploy.sh
   on:
-    tags: true
+    all_branches: true
+    condition: $TRAVIS_BRANCH =~ ^meta-.*
     repo: v1v/test-2fa
 env:
   global:
