@@ -13,7 +13,7 @@ if [ -n "${JENKINS_URL}" ] ||  [ -n "${TRAVIS}" ] ; then
 fi
 
 # if lerna isn't installed by default
-if ! command -v docker ; then
+if ! command -v lerna ; then
     npm install --global lerna
 fi
 
