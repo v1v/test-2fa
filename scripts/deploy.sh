@@ -23,6 +23,9 @@ if [ -n "${TRAVIS}" ] ; then
             git reset --hard "${TRAVIS_COMMIT}"
         fi
         git remote set-url origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}
+
+        # Enable to fetch branches when cloning with a detached and shallow clone
+        git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
     fi
     npm ci
 fi
