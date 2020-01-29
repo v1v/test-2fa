@@ -20,6 +20,7 @@ if [ -n "${TRAVIS}" ] ; then
         echo 'Current version does not match with the one that triggered this build'
         git reset --hard "${TRAVIS_COMMIT}"
     fi
+    git remote set-url origin https://${GITHUB_TOKEN}@github.com/v1v/test-2fa
 fi
 
 
