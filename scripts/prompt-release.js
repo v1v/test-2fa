@@ -24,7 +24,6 @@
  */
 
 const log = require('npmlog')
-const PromptUtils = require('@lerna/prompt')
 const childProcess = require('@lerna/child-process')
 
 !(async () => {
@@ -40,19 +39,8 @@ const childProcess = require('@lerna/child-process')
     ])
 
     childProcess.execSync('git', [
-      'diff',
-      './packages/test-2fa-bar/base.js'
-    ])
-
-    childProcess.execSync('git', [
       'add',
       './packages/test-2fa-bar/base.js'
-    ])
-
-    childProcess.execSync('git', [
-      'commit',
-      '-m',
-      'chore(release): bump version in the source code'
     ])
   } catch (err) {
     log.error(err)
