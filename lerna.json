@@ -10,7 +10,7 @@
         "master",
         "lerna"
       ],
-      "message": "chore(release): publish %s"
+      "message": "chore(release): publish"
     },
     "version": {
       "allowBranch": [
