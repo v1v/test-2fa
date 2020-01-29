@@ -22,6 +22,10 @@ if [ -n "${TRAVIS}" ] ; then
     fi
 fi
 
+
+## npm install just in case
+npm install
+
 set -xe
 ## This is possible as TOTP code is used once and only once
 npx lerna publish --otp="${TOTP_CODE}" ${FLAG}
