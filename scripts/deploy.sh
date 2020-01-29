@@ -24,6 +24,7 @@ if [ -n "${TRAVIS}" ] ; then
         fi
         git remote set-url origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}
     fi
+    npm ci
 fi
 
 set -xe
