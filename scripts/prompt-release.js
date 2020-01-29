@@ -52,7 +52,7 @@ const childProcess = require('@lerna/child-process')
     childProcess.execSync('git', [
       'commit',
       '-m',
-      '"bump version"'
+      'chore(release): bump version in the source code'
     ])
   } catch (err) {
     log.error(err)
