@@ -1,0 +1,17 @@
+{
+  "name": "test-2fa-foo",
+  "version": "1.2.3-rc.6",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest __tests__/foo-test.js"
+  },
+  "author": "",
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^25.1.0"
+  }
+}

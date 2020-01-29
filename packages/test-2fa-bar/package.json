@@ -1,0 +1,17 @@
+{
+  "name": "test-2fa-bar",
+  "version": "1.2.0",
+  "description": "",
+  "main": "test.js",
+  "scripts": {
+    "test": "jest __tests__/bar-test.js"
+  },
+  "author": "",
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^25.1.0"
+  }
+}

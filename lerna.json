@@ -1,0 +1,29 @@
+{
+  "packages": [
+    "packages/*"
+  ],
+  "version": "independent",
+  "registry": "https://registry.npmjs.org",
+  "command": {
+    "publish": {
+      "allowBranch": [
+        "master",
+        "lerna",
+        "meta-*"
+      ],
+      "message": "chore(release): publish"
+    },
+    "version": {
+      "allowBranch": [
+        "master",
+        "lerna",
+        "meta-*"
+      ],
+      "conventionalCommits": true,
+      "gitRemote": "origin"
+    }
+  },
+  "ignoreChanges": [
+    "**/*.md"
+  ]
+}
