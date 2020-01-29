@@ -39,21 +39,21 @@ const childProcess = require('@lerna/child-process')
       './packages/test-2fa-bar/base.js'
     ])
 
-    /**
-     * Prompt for working directory clean
-     */
-    const answer = await PromptUtils.confirm(
-      'Are these changes ok (Check your working directory before continuing)'
-    )
+    childProcess.execSync('git', [
+      'diff',
+      './packages/test-2fa-bar/base.js'
+    ])
 
-    if (!answer) {
-      log.error(
-        'release',
-        'Aborting the release process',
-        `Please run 'npm run release' again to start`
-      )
-      process.exit(1)
-    }
+    childProcess.execSync('git', [
+      'add',
+      './packages/test-2fa-bar/base.js'
+    ])
+
+    childProcess.execSync('git', [
+      'commit',
+      '-m',
+      '"bump version"'
+    ])
   } catch (err) {
     log.error(err)
   }
