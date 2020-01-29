@@ -12,10 +12,8 @@ if [ -n "${JENKINS_URL}" ] ||  [ -n "${TRAVIS}" ] ; then
     FLAG='--yes'
 fi
 
-## Ensure lerna is there
-PATH=$(pwd)/./node_modules/.bin:${PATH}
-
 ## This is possible as TOTP code is used once and only once
 set -xe
-lerna publish --otp="${TOTP_CODE}" ${FLAG}
+ls -ltrah ./node_modules/.bin
+./node_modules/.bin/lerna publish --otp="${TOTP_CODE}" ${FLAG}
 npm run github-release
