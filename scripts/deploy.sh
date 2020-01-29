@@ -15,10 +15,5 @@ if [ -n "${JENKINS_URL}" ] ||  [ -n "${TRAVIS}" ] ; then
     FLAG='--yes'
 fi
 
-## Prepare context to be running in a branch called TRAVIS_TAG if is set
-if [ -n "${TRAVIS_TAG}" ] ; then
-    git checkout -b "${TRAVIS_TAG}"
-fi
-
 lerna publish --otp="${TOTP_CODE}" ${FLAG}
 npm run github-release

@@ -8,7 +8,7 @@
     "publish": {
       "allowBranch": [
         "master",
-        "v[0-9]*meta"
+        "lerna"
       ],
       "message": "chore(release): publish"
     },
