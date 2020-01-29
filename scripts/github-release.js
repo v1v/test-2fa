@@ -28,10 +28,10 @@ const url = require('url')
 const fs = require('fs')
 const https = require('https')
 const releaseAssets = require('gh-release-assets')
-const { name, version } = require('../packages/rum/package.json')
+const { name, version } = require('../packages/test-2fa-bar/package.json')
 
-const BUILD_DIR = path.join(__dirname, '../packages/rum/dist/bundles')
-const GITHUB_URL = 'https://api.github.com/repos/elastic/apm-agent-rum-js'
+const BUILD_DIR = path.join(__dirname, '../packages/test-2fa-bar/dist/bundles')
+const GITHUB_URL = 'https://api.github.com/repos/v1v/test-2fa'
 
 function createRelease(token) {
   const releaseUrl = `${GITHUB_URL}/releases`
@@ -47,7 +47,7 @@ function createRelease(token) {
    * To match the package version with tags
    */
   const tagVersion = `${name}@${version}`
-  const changelogUrl = `https://github.com/elastic/apm-agent-rum-js/blob/master/CHANGELOG.md`
+  const changelogUrl = `https://github.com/v1v/test-2fa/blob/master/CHANGELOG.md`
   const postBody = {
     tag_name: tagVersion,
     name: tagVersion,
