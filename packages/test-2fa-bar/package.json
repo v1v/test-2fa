@@ -4,7 +4,7 @@
   "description": "",
   "main": "test.js",
   "scripts": {
-    "test": "jest test.js"
+    "test": "jest __tests__/bar-test.js"
   },
   "author": "",
   "publishConfig": {

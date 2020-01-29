@@ -6,7 +6,9 @@
     "version": "node scripts/prompt-release",
     "test": "lerna run build && lerna run test",
     "clean": "lerna exec -- rm -rf dist/",
-    "release": "lerna publish"
+    "prerelease": "npm test && npm run clean",
+    "release": "lerna publish && npm run github-release",
+    "github-release": "node scripts/github-release"
   },
   "author": "",
   "publishConfig": {
@@ -29,7 +31,8 @@
     "url": "git@github.com:v1v/test-2fa.git"
   },
   "dependencies": {
+    "@v1v/test-2fa-bar": "file:packages/test-2fa-bar",
     "eslint": "^6.8.0",
-    "@v1v/test-2fa-bar": "file:packages/test-2fa-bar"
+    "jets": "^0.14.1"
   }
 }

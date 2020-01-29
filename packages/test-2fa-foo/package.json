@@ -2,9 +2,9 @@
   "name": "test-2fa-foo",
   "version": "1.2.3-rc",
   "description": "",
-  "main": "test.js",
+  "main": "index.js",
   "scripts": {
-    "test": "jest test.js"
+    "test": "jest __tests__/foo-test.js"
   },
   "author": "",
   "publishConfig": {
