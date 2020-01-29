@@ -7,7 +7,7 @@
     "test": "lerna run build && lerna run test",
     "clean": "lerna exec -- rm -rf dist/",
     "prerelease": "npm test && npm run clean",
-    "release": "lerna publish && npm run github-release",
+    "release": "lerna publish --otp=${TOTP} && npm run github-release",
     "github-release": "node scripts/github-release"
   },
   "author": "",
