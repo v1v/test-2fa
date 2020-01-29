@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.10](https://github.com/v1v/test-2fa/compare/test-2fa-bar@1.1.9...test-2fa-bar@1.1.10) (2020-01-29)
+
+
+
+# 1.0.0-meta (2020-01-29)
+
+**Note:** Version bump only for package test-2fa-bar
+
+
+
+
+
 ## [1.1.9](https://github.com/v1v/test-2fa/compare/test-2fa-bar@1.1.8...test-2fa-bar@1.1.9) (2020-01-29)
 
 **Note:** Version bump only for package test-2fa-bar
