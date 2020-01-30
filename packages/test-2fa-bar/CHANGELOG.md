@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.7.3](https://github.com/v1v/test-2fa/compare/test-2fa-bar@1.7.2...test-2fa-bar@1.7.3) (2020-01-30)
+
+
+### Bug Fixes
+
+* **test-2fa-bar:** minor fix ([c44c4dd](https://github.com/v1v/test-2fa/commit/c44c4dd14ad5b407f9b84b0b9496dcc4e22b9d9f))
+
+
+
+
+
 ## [1.7.2](https://github.com/v1v/test-2fa/compare/test-2fa-bar@1.7.1...test-2fa-bar@1.7.2) (2020-01-30)
 
 
