@@ -107,7 +107,8 @@ pipeline {
                 deleteDir()
                 unstash 'source'
                 dir("${BASE_DIR}") {
-                    withTotpVault(secret: 'totp-apm/code/v1v', code_var_name: 'TOTP_CODE'){
+                  withTotpVault(secret: 'totp-apm/code/v1v', code_var_name: 'TOTP_CODE'){
+                    withCredentials([string(credentialsId: '2a9602aa-ab9f-4e52-baf3-b71ca88469c7', variable: 'GITHUB_TOKEN')]) {
                       sh 'scripts/prepare-git-context.sh'
                       sh '''
                         npm install
@@ -117,7 +118,15 @@ pipeline {
                         npm run github-release
                       '''
                     }
+                  }
                 }
+            }
+            post {
+              always {
+                script {
+                  currentBuild.description = "${currentBuild.description?.trim() ? currentBuild.description : ''} released"
+                }
+              }
             }
         }
         stage('Opbeans') {
