@@ -13,8 +13,8 @@ if [ -n "${JENKINS_URL}" ] || [ -n "${TRAVIS}" ] ; then
     FLAG='--yes'
 fi
 
-## Ensure it's not Detached
 if [ -n "${TRAVIS}" ] ; then
+    ## Ensure it's not Detached
     if [ -n "${TRAVIS_BRANCH}" ] ; then
         git checkout "${TRAVIS_BRANCH}"
         GIT_CURRENT_SHA=$(git rev-parse HEAD)
@@ -22,12 +22,16 @@ if [ -n "${TRAVIS}" ] ; then
             echo 'Current version does not match with the one that triggered this build'
             git reset --hard "${TRAVIS_COMMIT}"
         fi
+
+        ## Enable git+https with the token
         git remote set-url origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}
 
-        # Enable to fetch branches when cloning with a detached and shallow clone
+        ## Enable to fetch branches when cloning with a detached and shallow clone
         git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
     fi
-    npm ci
+
+    ## Ensure all the dependencies are fetched
+    npm ci > /dev/null
 fi
 
 set -xe
@@ -35,7 +39,7 @@ npm run version
 npm run release-ci
 npm run github-release
 
-## Syncup
+## Syncup master branch with the lerna release
 git checkout -b "syncup-${TRAVIS_BRANCH}"
 git checkout master
 git rebase "syncup-${TRAVIS_BRANCH}"
