@@ -98,12 +98,26 @@ pipeline {
             when {
                 beforeAgent true
                 allOf {
-                  branch 'master'
+                  // To speedup the development cycles
+                  //branch 'master'
                   expression { return params.release }
                 }
             }
             steps {
-                echo 'release'
+                deleteDir()
+                unstash 'source'
+                dir("${BASE_DIR}") {
+                    withTotpVault(secret: 'totp-apm/code/v1v', code_var_name: 'TOTP_CODE'){
+                      sh 'scripts/prepare-git-context.sh'
+                      sh '''
+                        npm install
+                        npm run test
+                        npm run version
+                        npm run release-ci
+                        npm run github-release
+                      '''
+                    }
+                }
             }
         }
         stage('Opbeans') {

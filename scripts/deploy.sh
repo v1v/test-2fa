@@ -3,17 +3,11 @@
 ### Potentially to be delegated to the CI context preparation
 echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
 
-### Potentially to be delegated to the CI context preparation
-TOTP_CODE=$(curl -s -X GET "${VAULT_URL}" -H "X-Vault-Token: ${VAULT_NPM_TOTP_TOKEN}" | jq --raw-output ".data.code")
-export TOTP_CODE
-
-## Running in the CI therefore it's not required to prompt for the versions
-export FLAG=''
-if [ -n "${JENKINS_URL}" ] || [ -n "${TRAVIS}" ] ; then
-    FLAG='--yes'
-fi
-
 if [ -n "${TRAVIS}" ] ; then
+    ### Potentially to be delegated to the CI context preparation
+    TOTP_CODE=$(curl -s -X GET "${VAULT_URL}" -H "X-Vault-Token: ${VAULT_NPM_TOTP_TOKEN}" | jq --raw-output ".data.code")
+    export TOTP_CODE
+
     ## Ensure it's not Detached
     if [ -n "${TRAVIS_BRANCH}" ] ; then
         git checkout "${TRAVIS_BRANCH}"
