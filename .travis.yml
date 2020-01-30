@@ -11,7 +11,7 @@ deploy:
   script: bash scripts/deploy.sh
   on:
     all_branches: true
-    condition: "$TRAVIS_BRANCH =~ ^meta-.*"
+    condition: "$TRAVIS_BRANCH =~ ^master$"
     repo: v1v/test-2fa
 env:
   global:
