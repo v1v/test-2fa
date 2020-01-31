@@ -10,6 +10,9 @@ pipeline {
     NOTIFY_TO = credentials('notify-to')
     JOB_GCS_BUCKET = credentials('gcs-bucket')
     PIPELINE_LOG_LEVEL = 'INFO'
+    NPMRC_SECRET = 'secret/apm-team/ci/elastic-observability-npmjs'
+    TOTP_SECRET = 'totp-apm/code/v1v'
+    HOME = "${env.WORKSPACE}"
   }
   options {
     timeout(time: 1, unit: 'HOURS')
@@ -27,7 +30,6 @@ pipeline {
     booleanParam(name: 'parallel_test', defaultValue: "true", description: "Enable run tests in parallel")
     booleanParam(name: 'bench_ci', defaultValue: true, description: 'Enable benchmarks')
     booleanParam(name: 'release', defaultValue: false, description: 'Release.')
-
   }
   stages {
     stage('Initializing'){
@@ -107,17 +109,14 @@ pipeline {
                 deleteDir()
                 unstash 'source'
                 dir("${BASE_DIR}") {
-                  withTotpVault(secret: 'totp-apm/code/v1v', code_var_name: 'TOTP_CODE'){
-                    withCredentials([string(credentialsId: '2a9602aa-ab9f-4e52-baf3-b71ca88469c7', variable: 'GITHUB_TOKEN')]) {
-                      sh 'scripts/prepare-git-context.sh'
-                      sh '''
-                        npm install
-                        npm run test
-                        npm run version
-                        npm run release-ci
-                        npm run github-release
-                      '''
-                    }
+                  release() {
+                    sh '''
+                      npm install
+                      npm run test
+                      npm run version
+                      npm run release-ci
+                      npm run github-release
+                    '''
                   }
                 }
             }
@@ -141,6 +140,17 @@ pipeline {
                 echo 'opbeans'
             }
         }
+      }
+    }
+  }
+}
+
+def release(Closure body){
+  withNpmrc(secret: "${env.NPMRC_SECRET}") {
+    withTotpVault(secret: "${env.TOTP_SECRET}", code_var_name: 'TOTP_CODE'){
+      withCredentials([string(credentialsId: '2a9602aa-ab9f-4e52-baf3-b71ca88469c7', variable: 'GITHUB_TOKEN')]) {
+        sh 'scripts/prepare-git-context.sh'
+        body()
       }
     }
   }
