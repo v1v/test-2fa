@@ -6,13 +6,6 @@ addons:
     - jq
 script:
 - npm run test
-deploy:
-  provider: script
-  script: bash scripts/deploy.sh
-  on:
-    all_branches: true
-    condition: "$TRAVIS_BRANCH =~ ^master$"
-    repo: v1v/test-2fa
 env:
   global:
   - secure: i9m9nCUpTPyGpwG8nbAsijs64WaelblyB+CZizGx12f6XHqINTk9byZEbfPJrKXUmuOnKizNu6yrzmQEyL+6/pLvgPRKKHiqluu/Ea3nYjlcODHWbuF6lo30FCpzCP1QG8jYUrm/ObKyRu1jdOZquI41mCec145ZSfAeAsGblcU55njDoy2CPr3HVPPj8URONfDQr+hFccY7YVuraPt7NWmfnXVNAKuyQWq/0M8Ilx1BIrxmrplZU+E7iNuzmlxVxePpZ4XT6TnUi/xkz1lHIy3cuMuS9OA1SJZoZwUk3H0h5RSlAzdB3VZ3Irwk8df9ZmrK5xk14nrlrMR4VN7ulmCJZHSfMX0+P1COj/AYUX0o0xtU1sLWd3PqklqfT3/AcN82KPfaBgxQXC6LB0D55E0FndxUgqhmlbiuoTcj0DM5b9Ua/ihkYzkMCRdQbOTWSbuw3RyGjqqe+jZwpy9ubAcG6nB6yiFWv5RT9Blr+DmPHWgaqSh+DWrhwiZesviC9vMeOf4AvfJN/Vp1OfVIZEkcBACtjN+TM6l209aCI5Zz1uo9qocDExhg3TXm3qjebYF8C37L3B4IQDjigmpnfSP6t0+097bJjOrpzGoinfM8EUvY/JBwwwqxIlmgxJLhs/zZ+XRyQ03VmWHytYon9RDr36cVF4RjsxU3I2cp5Ig=
