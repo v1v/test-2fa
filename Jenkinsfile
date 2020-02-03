@@ -129,7 +129,7 @@ pipeline {
                     script {
                       sh 'npm ci'
                       sh(label: 'Lerna version dry-run', script: 'lerna version --no-push --yes', returnStdout: true)
-                      releaseVersions = sh(label: 'Gather versions', script: 'git log -1 --format="%b"', returnStdout: true)
+                      releaseVersions = sh(label: 'Gather versions from last commit', script: 'git log -1 --format="%b"', returnStdout: true)
                       log(level: 'INFO', text: "Versions: ${releaseVersions}")
                     }
                   }
@@ -142,7 +142,7 @@ pipeline {
                 message 'Should we release a new version?'
                 ok 'Yes, we should.'
                 parameters {
-                  text defaultValue: "${releaseVersions}", description: '', name: 'versions'
+                  choice(name: 'Versions', choices: generateVersions(), description: 'Look at the versions to be released. They cannot be edited here')
                 }
               }
               steps {
@@ -193,4 +193,12 @@ def prepareRelease(Closure body){
       }
     }
   }
+}
+
+def generateVersions() {
+  def tags = []
+  tags.add("foo")
+  tags.add("bar")
+  tags.add("unable to fetch tags for ${releaseVersions}")
+  return tags.join('\n')
 }
