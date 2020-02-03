@@ -2,14 +2,6 @@
 
 @Library('apm@current') _
 
-import groovy.transform.Field
-
-/**
-Store the version for the releases
-Env variables are not supported in the input parameters: https://issues.jenkins-ci.org/browse/JENKINS-49946
-*/
-@Field def releaseVersions
-
 pipeline {
   agent { label 'linux && immutable' }
   environment {
@@ -129,8 +121,13 @@ pipeline {
                     script {
                       sh 'npm ci'
                       sh(label: 'Lerna version dry-run', script: 'lerna version --no-push --yes', returnStdout: true)
-                      releaseVersions = sh(label: 'Gather versions from last commit', script: 'git log -1 --format="%b"', returnStdout: true)
+                      def releaseVersions = sh(label: 'Gather versions from last commit', script: 'git log -1 --format="%b"', returnStdout: true)
                       log(level: 'INFO', text: "Versions: ${releaseVersions}")
+                      input(message: 'Should we release a new version?',
+                            ok: 'Yes, we should.',
+                            parameters: [text(defaultValue: "${releaseVersions}",
+                                              description: 'Look at the versions to be released. They cannot be edited here',
+                                              name: 'versions')])
                     }
                   }
                 }
@@ -138,13 +135,6 @@ pipeline {
             }
             stage('Release CI') {
               options { skipDefaultCheckout() }
-              input {
-                message 'Should we release a new version?'
-                ok 'Yes, we should.'
-                parameters {
-                  text defaultValue: generateVersions(), description: 'Look at the versions to be released. They cannot be edited here', name: 'versions'
-                }
-              }
               steps {
                 deleteDir()
                 unstash 'source'
@@ -193,12 +183,4 @@ def prepareRelease(Closure body){
       }
     }
   }
-}
-
-def generateVersions() {
-  def tags = []
-  tags.add("foo")
-  tags.add("bar")
-  tags.add("unable to fetch tags for ${releaseVersions}")
-  return tags.join('\n')
 }
