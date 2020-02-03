@@ -96,31 +96,64 @@ pipeline {
           }
         }
         stage('Release') {
-          options { skipDefaultCheckout() }
+          options {
+            skipDefaultCheckout()
+            timeout(time: 12, unit: 'HOURS')
+          }
+          environment {
+            HOME = "${env.WORKSPACE}"
+          }
           when {
             beforeAgent true
+            beforeInput true
             allOf {
               branch 'master'
-              expression { return params.release }
+              //expression { return params.release }
             }
           }
-          steps {
-            deleteDir()
-            unstash 'source'
-            dir("${BASE_DIR}") {
-              release() {
-                sh '''
-                  npm ci
-                  npm run release-ci
-                  npm run github-release
-                '''
+          stages {
+            stage('Notify') {
+              steps {
+                deleteDir()
+                unstash 'source'
+                dir("${BASE_DIR}") {
+                  prepareRelease() {
+                    script {
+                      sh 'npm ci'
+                      def commitMessage = sh(label: 'Gather versions', script: 'lerna version --no-push --yes', returnStdout: true)
+                      env.VERSION_TO_BE_POPULATED = commitMessage.replaceAll('\n', '##')
+                    }
+                  }
+                }
               }
             }
-          }
-          post {
-            always {
-              script {
-                currentBuild.description = "${currentBuild.description?.trim() ? currentBuild.description : ''} released"
+            stage('Release CI') {
+              options { skipDefaultCheckout() }
+              input {
+                message 'Should we release a new version?'
+                ok 'Yes, we should.'
+                parameters {
+                  text defaultValue: "${env.VERSION_TO_BE_POPULATED?.replaceAll('##','\n')}", description: '', name: 'versions'
+                }
+              }
+              steps {
+                deleteDir()
+                unstash 'source'
+                dir("${BASE_DIR}") {
+                  prepareRelease() {
+                    sh '''
+                      npm ci
+                      npm run release-ci
+                    '''
+                  }
+                }
+              }
+              post {
+                always {
+                  script {
+                    currentBuild.description = "${currentBuild.description?.trim() ? currentBuild.description : ''} released"
+                  }
+                }
               }
             }
           }
@@ -142,7 +175,7 @@ pipeline {
   }
 }
 
-def release(Closure body){
+def prepareRelease(Closure body){
   withNpmrc(secret: "${env.NPMRC_SECRET}") {
     withTotpVault(secret: "${env.TOTP_SECRET}", code_var_name: 'TOTP_CODE'){
       withCredentials([string(credentialsId: '2a9602aa-ab9f-4e52-baf3-b71ca88469c7', variable: 'GITHUB_TOKEN')]) {
