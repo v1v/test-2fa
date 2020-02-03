@@ -96,37 +96,34 @@ pipeline {
           }
         }
         stage('Release') {
-            options { skipDefaultCheckout() }
-            when {
-                beforeAgent true
-                allOf {
-                  // To speedup the development cycles
-                  //branch 'master'
-                  expression { return params.release }
-                }
+          options { skipDefaultCheckout() }
+          when {
+            beforeAgent true
+            allOf {
+              branch 'master'
+              expression { return params.release }
             }
-            steps {
-                deleteDir()
-                unstash 'source'
-                dir("${BASE_DIR}") {
-                  release() {
-                    sh '''
-                      npm install
-                      npm run test
-                      npm run version
-                      npm run release-ci
-                      npm run github-release
-                    '''
-                  }
-                }
-            }
-            post {
-              always {
-                script {
-                  currentBuild.description = "${currentBuild.description?.trim() ? currentBuild.description : ''} released"
-                }
+          }
+          steps {
+            deleteDir()
+            unstash 'source'
+            dir("${BASE_DIR}") {
+              release() {
+                sh '''
+                  npm ci
+                  npm run release-ci
+                  npm run github-release
+                '''
               }
             }
+          }
+          post {
+            always {
+              script {
+                currentBuild.description = "${currentBuild.description?.trim() ? currentBuild.description : ''} released"
+              }
+            }
+          }
         }
         stage('Opbeans') {
             when {
