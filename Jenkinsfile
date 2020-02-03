@@ -142,7 +142,7 @@ pipeline {
                 message 'Should we release a new version?'
                 ok 'Yes, we should.'
                 parameters {
-                  choice(name: 'Versions', choices: generateVersions(), description: 'Look at the versions to be released. They cannot be edited here')
+                  text defaultValue: generateVersions(), description: 'Look at the versions to be released. They cannot be edited here', name: 'versions'
                 }
               }
               steps {
