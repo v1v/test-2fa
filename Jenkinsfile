@@ -122,6 +122,8 @@ pipeline {
                       sh 'npm ci'
                       def commitMessage = sh(label: 'Gather versions', script: 'lerna version --no-push --yes', returnStdout: true)
                       env.VERSION_TO_BE_POPULATED = commitMessage.replaceAll('\n', '##')
+                      println "---------${commitMessage}"
+                      println "---------${commitMessage.replaceAll('\n', '##')}"
                     }
                   }
                 }
