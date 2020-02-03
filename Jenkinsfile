@@ -2,6 +2,14 @@
 
 @Library('apm@current') _
 
+import groovy.transform.Field
+
+/**
+Store the version for the releases
+Env variables are not supported in the input parameters: https://issues.jenkins-ci.org/browse/JENKINS-49946
+*/
+@Field def releaseVersions
+
 pipeline {
   agent { label 'linux && immutable' }
   environment {
@@ -120,10 +128,9 @@ pipeline {
                   prepareRelease() {
                     script {
                       sh 'npm ci'
-                      def commitMessage = sh(label: 'Gather versions', script: 'lerna version --no-push --yes', returnStdout: true)
-                      env.VERSION_TO_BE_POPULATED = commitMessage.replaceAll('\n', '##')
-                      println "---------${commitMessage}"
-                      println "---------${commitMessage.replaceAll('\n', '##')}"
+                      sh(label: 'Lerna version dry-run', script: 'lerna version --no-push --yes', returnStdout: true)
+                      releaseVersions = sh(label: 'Gather versions', script: 'git log -1 --format="%b"', returnStdout: true)
+                      log(level: 'INFO', text: "Versions: ${releaseVersions}")
                     }
                   }
                 }
@@ -135,7 +142,7 @@ pipeline {
                 message 'Should we release a new version?'
                 ok 'Yes, we should.'
                 parameters {
-                  text defaultValue: "${env.VERSION_TO_BE_POPULATED?.replaceAll('##','\n')}", description: '', name: 'versions'
+                  text defaultValue: "${releaseVersions}", description: '', name: 'versions'
                 }
               }
               steps {
