@@ -12,7 +12,7 @@ pipeline {
     PIPELINE_LOG_LEVEL = 'INFO'
     NPMRC_SECRET = 'secret/apm-team/ci/elastic-observability-npmjs'
     TOTP_SECRET = 'totp-apm/code/v1v'
-    HOME = "${env.WORKSPACE}"
+    HOME = "${env.WORKSPACE}/${BASE_DIR}"
   }
   options {
     timeout(time: 1, unit: 'HOURS')
