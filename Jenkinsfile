@@ -129,7 +129,7 @@ pipeline {
                 dir("${BASE_DIR}") {
                   prepareRelease() {
                     script {
-                      sh(label: 'Lerna version dry-run', script: 'npx lerna version --no-push --yes', returnStdout: true)
+                      sh(label: 'Lerna version dry-run', script: 'lerna version --no-push --yes', returnStdout: true)
                       def releaseVersions = sh(label: 'Gather versions from last commit', script: 'git log -1 --format="%b"', returnStdout: true)
                       log(level: 'INFO', text: "Versions: ${releaseVersions}")
                       input(message: 'Should we release a new version?',
@@ -183,12 +183,14 @@ pipeline {
   }
 }
 
-def prepareRelease(Closure body){
+def prepareRelease(String nodeVersion='node:lts', Closure body){
   withNpmrc(secret: "${env.NPMRC_SECRET}") {
     withTotpVault(secret: "${env.TOTP_SECRET}", code_var_name: 'TOTP_CODE'){
       withCredentials([string(credentialsId: '2a9602aa-ab9f-4e52-baf3-b71ca88469c7', variable: 'GITHUB_TOKEN')]) {
         sh 'scripts/prepare-git-context.sh'
-        body()
+        docker.image(nodeVersion).inside(){
+          body()
+        }
       }
     }
   }
