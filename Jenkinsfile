@@ -182,7 +182,7 @@ pipeline {
 }
 
 def prepareRelease(String nodeVersion='node:lts', Closure body){
-  withNpmrc(secret: "${env.NPMRC_SECRET}") {
+  withNpmrc(secret: "${env.NPMRC_SECRET}", path: "${env.WORKSPACE}/${env.BASE_DIR}") {
     withTotpVault(secret: "${env.TOTP_SECRET}", code_var_name: 'TOTP_CODE'){
       withCredentials([usernamePassword(credentialsId: '2a9602aa-ab9f-4e52-baf3-b71ca88469c7-UserAndToken', 
                                         passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')]) {
