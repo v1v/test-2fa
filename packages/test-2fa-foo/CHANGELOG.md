@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0-rc.7](https://github.com/v1v/test-2fa/compare/test-2fa-foo@1.3.0-rc.6...test-2fa-foo@1.3.0-rc.7) (2020-02-04)
+
+**Note:** Version bump only for package test-2fa-foo
+
+
+
+
+
 # [1.3.0-rc.6](https://github.com/v1v/test-2fa/compare/test-2fa-foo@1.3.0-rc.5...test-2fa-foo@1.3.0-rc.6) (2020-02-04)
 
 
