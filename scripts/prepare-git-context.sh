@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -exo pipefail
 
-# Enable git+ssh. Env variables are created on the fly with the gitCheckout
-git config remote.origin.url "git@github.com:${ORG_NAME}/${REPO_NAME}.git"
+# Enable git+https. Env variables are created on the fly with the gitCheckout
+git config remote.origin.url "https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${ORG_NAME}/${REPO_NAME}.git"
 
 # Enable to fetch branches when cloning with a detached and shallow clone
 git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
@@ -23,6 +23,6 @@ git checkout "${BRANCH_NAME}"
 # used GIT_BASE_COMMIT instead GIT_COMMIT to support the MultiBranchPipelines.
 git reset --hard "${GIT_BASE_COMMIT}"
 
-# Enable upstream
-git remote add upstream "git@github.com:${ORG_NAME}/${REPO_NAME}.git"
+# Enable upstream with git+https.
+git remote add upstream "https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${ORG_NAME}/${REPO_NAME}.git"
 git fetch upstream
