@@ -190,6 +190,9 @@ def prepareRelease(String nodeVersion='node:lts', Closure body){
           withEnv(["HOME=${env.WORKSPACE}/${env.BASE_DIR}"]) {
             sh 'scripts/prepare-git-context.sh'
             sh 'npm ci'
+            echo "let's enforce a sleep to validate if the TOTP can be still used"
+            sleep 60
+            sh 'env | sort'
             body()
           }
         }
