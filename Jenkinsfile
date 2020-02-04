@@ -129,7 +129,7 @@ pipeline {
                 dir("${BASE_DIR}") {
                   prepareRelease() {
                     script {
-                      sh(label: 'Lerna version dry-run', script: 'lerna version --no-push --yes', returnStdout: true)
+                      sh(label: 'Lerna version dry-run', script: 'npx lerna version --no-push --yes', returnStdout: true)
                       def releaseVersions = sh(label: 'Gather versions from last commit', script: 'git log -1 --format="%b"', returnStdout: true)
                       log(level: 'INFO', text: "Versions: ${releaseVersions}")
                       input(message: 'Should we release a new version?',
