@@ -12,7 +12,7 @@ pipeline {
     PIPELINE_LOG_LEVEL = 'INFO'
     NPMRC_SECRET = 'secret/apm-team/ci/elastic-observability-npmjs'
     TOTP_SECRET = 'totp-apm/code/v1v'
-    HOME = "${env.WORKSPACE}/${BASE_DIR}"
+    HOME = "${env.WORKSPACE}"
   }
   options {
     timeout(time: 1, unit: 'HOURS')
@@ -189,7 +189,9 @@ def prepareRelease(String nodeVersion='node:lts', Closure body){
       withCredentials([string(credentialsId: '2a9602aa-ab9f-4e52-baf3-b71ca88469c7', variable: 'GITHUB_TOKEN')]) {
         sh 'scripts/prepare-git-context.sh'
         docker.image(nodeVersion).inside(){
-          body()
+          withEnv(["HOME=${env.WORKSPACE}/${env.BASE_DIR}"]) {
+            body()
+          }
         }
       }
     }
