@@ -20,7 +20,7 @@
         "meta-*"
       ],
       "conventionalCommits": true,
-      "gitRemote": "origin"
+      "gitRemote": "upstream"
     }
   },
   "ignoreChanges": [

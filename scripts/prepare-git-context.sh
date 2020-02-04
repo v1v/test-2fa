@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -exo pipefail
 
+# Enable upstream
+git remote add upstream "git@github.com:${ORG_NAME}/${REPO_NAME}.git"
+
 # Enable git+ssh. Env variables are created on the fly with the gitCheckout
 git config remote.origin.url "git@github.com:${ORG_NAME}/${REPO_NAME}.git"
 
