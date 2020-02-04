@@ -150,9 +150,7 @@ pipeline {
                 unstash 'cache'
                 dir("${BASE_DIR}") {
                   prepareRelease() {
-                    sh '''
-                      npm run release-ci
-                    '''
+                    sh 'npm run release-ci'
                   }
                 }
               }
@@ -190,6 +188,7 @@ def prepareRelease(String nodeVersion='node:lts', Closure body){
         sh 'scripts/prepare-git-context.sh'
         docker.image(nodeVersion).inside(){
           withEnv(["HOME=${env.WORKSPACE}/${env.BASE_DIR}"]) {
+            sh 'npm ci'
             body()
           }
         }
