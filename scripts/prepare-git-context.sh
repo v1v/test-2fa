@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -exo pipefail
 
-# Enable upstream
-git remote add upstream "git@github.com:${ORG_NAME}/${REPO_NAME}.git"
-
 # Enable git+ssh. Env variables are created on the fly with the gitCheckout
 git config remote.origin.url "git@github.com:${ORG_NAME}/${REPO_NAME}.git"
 
@@ -25,3 +22,7 @@ git checkout "${BRANCH_NAME}"
 # when running the release pipeline.
 # used GIT_BASE_COMMIT instead GIT_COMMIT to support the MultiBranchPipelines.
 git reset --hard "${GIT_BASE_COMMIT}"
+
+# Enable upstream
+git remote add upstream "git@github.com:${ORG_NAME}/${REPO_NAME}.git"
+git fetch upstream
