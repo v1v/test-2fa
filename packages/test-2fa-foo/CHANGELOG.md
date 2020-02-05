@@ -3,19 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [1.3.0-rc.8](https://github.com/v1v/test-2fa/compare/test-2fa-foo@1.3.0-rc.5...test-2fa-foo@1.3.0-rc.8) (2020-02-04)
-
-
-### Features
-
-* **test-2fa-foo:** changes ([a396086](https://github.com/v1v/test-2fa/commit/a3960867cd532e5e3fff8e67a0bca57dfa97180b))
-* **test-2fa-foo:** changes ([ad19fb0](https://github.com/v1v/test-2fa/commit/ad19fb0d85faeaf8dd0d963162b2cde3b0cc02e8))
-* **test-2fa-foo:** changes ([5484822](https://github.com/v1v/test-2fa/commit/548482209f3aded393cfd073ec1e6cdec7871c31))
-
-
-
-
-
 # [1.3.0-rc.7](https://github.com/v1v/test-2fa/compare/test-2fa-foo@1.3.0-rc.6...test-2fa-foo@1.3.0-rc.7) (2020-02-04)
 
 **Note:** Version bump only for package test-2fa-foo
