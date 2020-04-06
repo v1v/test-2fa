@@ -10,8 +10,8 @@ pipeline {
     NOTIFY_TO = credentials('notify-to')
     JOB_GCS_BUCKET = credentials('gcs-bucket')
     PIPELINE_LOG_LEVEL = 'INFO'
-    NPMRC_SECRET = 'secret/apm-team/ci/elastic-observability-npmjs'
-    TOTP_SECRET = 'totp-apm/code/v1v'
+    NPMRC_SECRET = 'secret/jenkins-ci/npmjs/elasticmachine'
+    TOTP_SECRET = 'totp/code/npmjs-elasticmachine'
     HOME = "${env.WORKSPACE}"
   }
   options {
@@ -125,18 +125,17 @@ pipeline {
               steps {
                 deleteDir()
                 unstash 'source'
-                unstash 'cache'
                 dir("${BASE_DIR}") {
                   prepareRelease() {
                     script {
                       sh(label: 'Lerna version dry-run', script: 'npx lerna version --no-push --yes', returnStdout: true)
                       def releaseVersions = sh(label: 'Gather versions from last commit', script: 'git log -1 --format="%b"', returnStdout: true)
                       log(level: 'INFO', text: "Versions: ${releaseVersions}")
-                      input(message: 'Should we release a new version?',
-                            ok: 'Yes, we should.',
-                            parameters: [text(defaultValue: "${releaseVersions}",
-                                              description: 'Look at the versions to be released. They cannot be edited here',
-                                              name: 'versions')])
+                      emailext subject: "[${env.REPO}] Release ready to be pushed", to: "victor.martinez@elastic.co",
+                               body: "Please go to ${env.BUILD_URL}input to approve or reject within 12 hours.\n Changes: ${releaseVersions}"
+                      input(message: 'Should we release a new version?', ok: 'Yes, we should.',
+                            parameters: [text(description: 'Look at the versions to be released. They cannot be edited here',
+                                              defaultValue: "${releaseVersions}", name: 'versions')])
                     }
                   }
                 }
@@ -147,7 +146,6 @@ pipeline {
               steps {
                 deleteDir()
                 unstash 'source'
-                unstash 'cache'
                 dir("${BASE_DIR}") {
                   prepareRelease() {
                     sh 'npm run release-ci'
