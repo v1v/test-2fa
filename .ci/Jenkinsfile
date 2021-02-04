@@ -70,13 +70,6 @@ pipeline {
       options {
         skipDefaultCheckout()
       }
-      when {
-        beforeAgent true
-        allOf {
-          branch 'master'
-          expression { return params.release }
-        }
-      }
       stages {
         stage('Notify') {
           options { skipDefaultCheckout() }
@@ -92,9 +85,9 @@ pipeline {
             withNodeEnv(){
               dir("${BASE_DIR}"){
                 prepareRelease() {
-                  sh(script: "npm publish --otp=\${TOTP_CODE} --tag alpha", label: 'publish to NPM')
+                  //sh(script: "npm publish --otp=\${TOTP_CODE} --tag alpha", label: 'publish to NPM')
                   setEnvVar('VERSION', sh(script: '''node -p "require('./package.json').version"''', returnStdout: true).trim())
-                  sh(script: "npm dist-tag add @elastic/synthetics@${VERSION} latest", label: 'retag latest')
+                  //sh(script: "npm dist-tag add @elastic/synthetics@${VERSION} latest", label: 'retag latest')
                 }
               }
             }
@@ -141,10 +134,10 @@ def withNodeEnv(Map args=[:], Closure body){
 def prepareRelease(Closure body){
   withNpmrc(secret: "${env.NPMRC_SECRET}", path: "${env.WORKSPACE}/${env.BASE_DIR}") {
     withGitRelease(credentialsId: '2a9602aa-ab9f-4e52-baf3-b71ca88469c7-UserAndToken') {
-      sh(script: 'npm version prerelease --preid=alpha', label: 'bump the alpha version')
       sh(script: 'npm ci', label: 'prepare the ci environment')
-      gitPush()
-      gitPush(args: '--tags')
+      sh(script: 'npm version prerelease --preid=alpha', label: 'bump the alpha version')
+      //gitPush()
+      //gitPush(args: '--tags')
       withTotpVault(secret: "${env.TOTP_SECRET}", code_var_name: 'TOTP_CODE'){
         body()
       }
