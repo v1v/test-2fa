@@ -175,7 +175,6 @@ pipeline {
             VERSION = ''
           }
           steps {
-            cleanup()
             withNodeEnv(){
               dir("${BASE_DIR}"){
                 withNpmrc(secret: "${env.NPMRC_SECRET}", path: "${env.WORKSPACE}/${env.BASE_DIR}") {
