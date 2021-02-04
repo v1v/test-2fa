@@ -171,6 +171,9 @@ pipeline {
             message 'Should we release a new version?'
             ok 'Yes, we should.'
           }
+          environment {
+            NPM_PACKAGE = 'test-2fa'
+          }
           steps {
             withNodeEnv(){
               dir("${BASE_DIR}"){
@@ -180,13 +183,13 @@ pipeline {
                     sh(script: 'npm version prerelease --preid=alpha', label: 'bump the alpha version')
                     gitPush()
                     gitPush(args: '--tags')
-                    setEnvVar('VERSION', sh(script: 'npm view test-2fa version', returnStdout: true).trim())
-                    echo "env.VERSION = ${env.VERSION}"
+                    setEnvVar('VERSION', sh(script: "npm view ${env.NPM_PACKAGE} version", returnStdout: true).trim())
+                    log(level: 'INFO', text: "Version to be published '${env.VERSION}'")
                     withTotpVault(secret: "${env.TOTP_SECRET}", code_var_name: 'TOTP_CODE'){
                       sh(script: "npm publish --otp=${env.TOTP_CODE} --tag alpha", label: 'publish to NPM')
                     }
                     withTotpVault(secret: "${env.TOTP_SECRET}", code_var_name: 'TOTP_CODE'){
-                      sh(script: "npm dist-tag --otp=${env.TOTP_CODE} add test-2fa@${env.VERSION} latest", label: 'retag latest')
+                      sh(script: "npm dist-tag --otp=${env.TOTP_CODE} add ${env.NPM_PACKAGE}@${env.VERSION} latest", label: 'retag latest')
                     }
                   }
                 }
@@ -195,7 +198,7 @@ pipeline {
           }
           post {
             success {
-              notifyStatus(slackStatus: 'good', subject: "[${env.REPO}] Release '${env.VERSION}' published", body: "Great news, the release has been done successfully. (<${env.RUN_DISPLAY_URL}|Open>). \n Release URL: (<https://preview.npmjs.com/package/test-2fa/v/${env.VERSION}|${env.VERSION}>)")
+              notifyStatus(slackStatus: 'good', subject: "[${env.REPO}] Release '${env.VERSION}' published", body: "Great news, the release has been done successfully. (<${env.RUN_DISPLAY_URL}|Open>). \n Release URL: (<https://preview.npmjs.com/package/${env.NPM_PACKAGE}/v/${env.VERSION}|${env.VERSION}>)")
             }
             always {
               script {
