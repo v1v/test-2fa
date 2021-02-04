@@ -1,6 +1,6 @@
 {
   "name": "test-2fa",
-  "version": "0.0.1-alpha.9",
+  "version": "0.0.1-alpha.10",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +18,7 @@
     "docker": "./build-docker.sh"
   },
   "bin": {
-    "@elastic/synthetics": "dist/cli.js",
+    "synthetics": "dist/cli.js",
     "elastic-synthetics": "dist/cli.js"
   },
   "files": [
