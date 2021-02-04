@@ -80,6 +80,10 @@ pipeline {
         }
         stage('Release CI') {
           options { skipDefaultCheckout() }
+          input {
+            message 'Should we release a new version?'
+            ok 'Yes, we should.'
+          }
           steps {
             //cleanup()
             withNodeEnv(){
@@ -94,7 +98,7 @@ pipeline {
           }
           post {
             success {
-              notifyStatus(slackStatus: 'good', subject: "[${env.REPO}] Release published", body: "Great news, the release has been done successfully. (<${env.RUN_DISPLAY_URL}|Open>). \n Release URL: (<https://github.com/elastic/apm-agent-rum-js/releases|Here>)")
+              notifyStatus(slackStatus: 'good', subject: "[${env.REPO}] Release '${VERSION}' published", body: "Great news, the release has been done successfully. (<${env.RUN_DISPLAY_URL}|Open>). \n Release URL: (<https://github.com/elastic/apm-agent-rum-js/releases|Here>)")
             }
             always {
               script {
@@ -136,8 +140,8 @@ def prepareRelease(Closure body){
     withGitRelease(credentialsId: '2a9602aa-ab9f-4e52-baf3-b71ca88469c7-UserAndToken') {
       sh(script: 'npm ci', label: 'prepare the ci environment')
       sh(script: 'npm version prerelease --preid=alpha', label: 'bump the alpha version')
-      //gitPush()
-      //gitPush(args: '--tags')
+      gitPush()
+      gitPush(args: '--tags')
       withTotpVault(secret: "${env.TOTP_SECRET}", code_var_name: 'TOTP_CODE'){
         body()
       }
@@ -155,5 +159,5 @@ def notifyStatus(def args = [:]) {
             tokenCredentialId: 'jenkins-slack-integration-token')
   // transform slack URL format '(<URL|description>)' to 'URL'.
   def bodyEmail = args.body.replaceAll('\\(<', '').replaceAll('\\|.*>\\)', '')
-  emailext(subject: args.subject, to: 'victor.martinez@elastic.co', body: bodyEmail)
+  // emailext(subject: args.subject, to: 'victor.martinez@elastic.co', body: bodyEmail)
 }
