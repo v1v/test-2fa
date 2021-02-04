@@ -5,7 +5,7 @@
 pipeline {
   agent { label 'ubuntu-18 && immutable' }
   environment {
-    REPO = "synthetics"
+    REPO = 'test-2fa'
     BASE_DIR = "src/github.com/elastic/${env.REPO}"
     PIPELINE_LOG_LEVEL = 'INFO'
     DOCKERELASTIC_SECRET = 'secret/observability-team/ci/docker-registry/prod'
@@ -14,8 +14,8 @@ pipeline {
     SECCOMP_FILE = "${env.WORKSPACE}/${env.BASE_DIR}/.ci/seccomp_profile.json"
     DOCKER_IMG = "${env.DOCKER_REGISTRY}/observability-ci/synthetics"
     DOCKER_IMG_PUBLIC = "${env.DOCKER_REGISTRY}/experimental/synthetics"
-    NPMRC_SECRET = 'secret/jenkins-ci/npmjs/elasticmachine'
-    TOTP_SECRET = 'totp/code/npmjs-elasticmachine'
+    NPMRC_SECRET = 'secret/apm-team/ci/elastic-observability-npmjs'
+    TOTP_SECRET = 'totp-apm/code/v1v'
   }
   options {
     timeout(time: 12, unit: 'HOURS')  // to support releases then we will add a timeout in each stage
@@ -27,12 +27,7 @@ pipeline {
     rateLimitBuilds(throttle: [count: 60, durationName: 'hour', userBoost: true])
     quietPeriod(10)
   }
-  triggers {
-    issueCommentTrigger('(?i)(^/test$)')
-    upstream("apm-agent-rum/heartbeat-elastic-synthetics/${ env.JOB_BASE_NAME.startsWith('PR-') ? 'none' : 'heartbeat-synthetics' }, apm-agent-rum/heartbeat-elastic-synthetics/${ env.JOB_BASE_NAME.startsWith('PR-') ? 'none' : 'heartbeat-synthetics' }-7.x")
-  }
   parameters {
-    booleanParam(name: 'run_all_stages', defaultValue: false, description: 'Force to run all stages.')
     booleanParam(name: 'release', defaultValue: false, description: 'Release. If so, all the other parameters will be ignored when releasing from master.')
   }
   stages {
@@ -58,28 +53,6 @@ pipeline {
         stash allowEmpty: true, name: 'source', useDefaultExcludes: false, excludes: ".npm/_cacache/**,.nvm/.git/**"
       }
     }
-    /**
-     Checks formatting / linting.
-     */
-    stage('Lint') {
-      options {
-        timeout(5)
-      }
-      steps {
-        withGithubNotify(context: 'Linting') {
-          cleanup()
-          withNodeEnv(){
-            dir("${BASE_DIR}"){
-              sh(label: 'Checks linting',script: 'npm run-script lint')
-              preCommit(commit: "${GIT_BASE_COMMIT}", junit: true)
-            }
-          }
-        }
-      }
-    }
-    /**
-     Build the main package
-     */
     stage('Build') {
       options {
         timeout(5)
@@ -90,108 +63,6 @@ pipeline {
           withNodeEnv(){
             dir("${BASE_DIR}"){
               sh(label: 'Build',script: 'npm run build')
-            }
-          }
-        }
-      }
-    }
-    /**
-     Execute integration tests.
-     */
-    stage('Test') {
-      options {
-        timeout(5)
-      }
-      steps {
-        withGithubNotify(context: 'Test') {
-          cleanup()
-          withNodeEnv(){
-            dir("${BASE_DIR}"){
-              sh(label: 'install jest-unit',script: 'npm add --dev jest-junit')
-              sh(label: 'Runs the tests',script: './node_modules/.bin/jest --ci --reporters=default --reporters=jest-junit')
-            }
-          }
-        }
-      }
-      post {
-        always {
-          junit(allowEmptyResults: true, keepLongStdio: true, testResults: "${BASE_DIR}/junit.xml")
-        }
-      }
-    }
-    stage('E2e Test') {
-      options {
-        timeout(15)
-      }
-      steps {
-        withGithubNotify(context: 'E2e Test') {
-          cleanup()
-          withNodeEnv(){
-            dir("${BASE_DIR}"){
-              sh(label: 'set permissions', script: '''
-                chmod -R ugo+rw examples
-              ''')
-              dir("__tests__/e2e"){
-                timeout(time: 10, unit: 'MINUTES') {
-                  sh(label: 'run e2e tests',script: 'npm run test')
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    /**
-     Publish Docker images.
-     */
-    stage('Publish Docker image'){
-      options {
-        timeout(15)
-      }
-      matrix {
-        agent { label 'ubuntu-18 && immutable' }
-        axes {
-          axis {
-            name 'STACK_VERSION'
-            values '8.0.0-synthetics', '7.10.0-synthetics', '7.11.0-synthetics'
-          }
-        }
-        stages {
-          stage('package'){
-            steps {
-              withGithubNotify(context: 'Package') {
-                cleanup()
-                withNodeEnv(){
-                  dir("${BASE_DIR}"){
-                    sh(label: 'Build',script: 'npm run build')
-                    sh(label: 'Pack',script: 'npm pack')
-                  }
-                }
-              }
-            }
-          }
-          stage('observability-ci'){
-            environment {
-              DOCKER_IMG_TAG = "${env.DOCKER_IMG}:${env.GIT_BASE_COMMIT}-${env.STACK_VERSION}"
-              DOCKER_IMG_TAG_BRANCH = "${env.DOCKER_IMG}:${env.BRANCH_NAME}-${env.STACK_VERSION}"
-            }
-            steps {
-              withGithubNotify(context: "push ${DOCKER_IMG_TAG_BRANCH}") {
-                pushDockerImage()
-              }
-            }
-          }
-          stage('experimental'){
-            when {
-              branch 'master'
-            }
-            environment {
-              DOCKER_IMG_TAG_BRANCH = "${env.DOCKER_IMG_PUBLIC}:${env.STACK_VERSION}"
-            }
-            steps {
-              withGithubNotify(context: "push ${DOCKER_IMG_TAG_BRANCH}") {
-                pushDockerImage()
-              }
             }
           }
         }
@@ -218,9 +89,6 @@ pipeline {
         }
         stage('Release CI') {
           options { skipDefaultCheckout() }
-          input {
-            message 'Should we release a new version?'
-          }
           steps {
             cleanup()
             withNodeEnv(){
@@ -252,11 +120,6 @@ pipeline {
       }
     }
   }
-  post {
-    cleanup {
-      notifyBuildResult(prComment: true)
-    }
-  }
 }
 
 def cleanup(){
@@ -266,56 +129,9 @@ def cleanup(){
   unstash 'source'
 }
 
-def withNodeInDockerEnv(Map args=[:], Closure body){
-  docker.image("${NODE_DOCKER_IMAGE}").inside(" --security-opt seccomp=${SECCOMP_FILE}"){
-    withEnv(["HOME=${WORKSPACE}"]) {
-      body()
-    }
-  }
-}
-
 def withNodeEnv(Map args=[:], Closure body){
   withEnv(["HOME=${WORKSPACE}"]) {
-    sh(label: 'install Node.js', script: '''
-      set +x
-      if [ -z "$(command -v nvm)" ]; then
-        curl -so- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.1/install.sh | bash
-      fi
-
-      export NVM_DIR="${HOME}/.nvm"
-      [ -s "${NVM_DIR}/nvm.sh" ] && \\. "${NVM_DIR}/nvm.sh"
-      nvm install --lts
-      nvm version | head -n1 > .nvm-node-version
-    ''')
-    def node_version = readFile(file: '.nvm-node-version').trim()
-    withEnv(["PATH+NVM=${HOME}/.nvm/versions/node/${node_version}/bin"]){
-      body()
-    }
-  }
-}
-
-def pushDockerImage(){
-  dir("${BASE_DIR}"){
-    dockerLogin(secret: "${env.DOCKERELASTIC_SECRET}",
-      registry: "${env.DOCKER_REGISTRY}")
-    sh(label: 'Build Docker image',
-      script: """docker build \
-        -t ${env.DOCKER_IMG_TAG} \
-        -t ${env.DOCKER_IMG_TAG_BRANCH} \
-        --build-arg STACK_VERSION=${env.STACK_VERSION} \
-        --label BRANCH_NAME=${env.BRANCH_NAME} \
-        --label GIT_SHA=${env.GIT_BASE_COMMIT} \
-        --label TIMESTAMP=\$(date +%Y-%m-%d_%H:%M) \
-        .
-    """)
-    retryWithSleep(retries: 3, seconds: 5, backoff: true){
-      if(env.DOCKER_IMG_TAG){
-        sh(label: 'Push Docker image sha',
-          script: "docker push ${env.DOCKER_IMG_TAG}")
-      }
-      sh(label: 'Push Docker image name',
-        script: "docker push ${env.DOCKER_IMG_TAG_BRANCH}")
-    }
+    body()
   }
 }
 
@@ -344,9 +160,9 @@ def prepareRelease(Closure body){
   message in both systems.
  */
 def notifyStatus(def args = [:]) {
-  slackSend(channel: '#synthetics-user_experience-uptime', color: args.slackStatus, message: "${args.subject}. ${args.body}",
+  slackSend(channel: '#oblt-robots', color: args.slackStatus, message: "${args.subject}. ${args.body}",
             tokenCredentialId: 'jenkins-slack-integration-token')
   // transform slack URL format '(<URL|description>)' to 'URL'.
   def bodyEmail = args.body.replaceAll('\\(<', '').replaceAll('\\|.*>\\)', '')
-  emailext(subject: args.subject, to: 'synthrum@elastic.co', body: bodyEmail)
+  emailext(subject: args.subject, to: 'victor.martinez@elastic.co', body: bodyEmail)
 }
