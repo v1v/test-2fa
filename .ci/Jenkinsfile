@@ -5,7 +5,7 @@
 pipeline {
   agent { label 'ubuntu-18 && immutable' }
   environment {
-    REPO = 'test-2fa'
+    REPO = "test-2fa"
     BASE_DIR = "src/github.com/elastic/${env.REPO}"
     PIPELINE_LOG_LEVEL = 'INFO'
     DOCKERELASTIC_SECRET = 'secret/observability-team/ci/docker-registry/prod'
@@ -27,7 +27,12 @@ pipeline {
     rateLimitBuilds(throttle: [count: 60, durationName: 'hour', userBoost: true])
     quietPeriod(10)
   }
+  triggers {
+    issueCommentTrigger('(?i)(^/test$)')
+    upstream("apm-agent-rum/heartbeat-elastic-synthetics/${ env.JOB_BASE_NAME.startsWith('PR-') ? 'none' : 'heartbeat-synthetics' }, apm-agent-rum/heartbeat-elastic-synthetics/${ env.JOB_BASE_NAME.startsWith('PR-') ? 'none' : 'heartbeat-synthetics' }-7.x")
+  }
   parameters {
+    booleanParam(name: 'run_all_stages', defaultValue: false, description: 'Force to run all stages.')
     booleanParam(name: 'release', defaultValue: false, description: 'Release. If so, all the other parameters will be ignored when releasing from master.')
   }
   stages {
@@ -42,6 +47,8 @@ pipeline {
         deleteDir()
         gitCheckout(basedir: "${BASE_DIR}")
         retryWithSleep(retries: 3, seconds: 5, backoff: true) {
+          dockerLogin(secret: "${DOCKERELASTIC_SECRET}",
+                      registry: "${DOCKER_REGISTRY}")
           withNodeEnv(){
             dir("${BASE_DIR}"){
               sh(label: 'Download dependencies',script: 'npm install')
@@ -51,16 +58,97 @@ pipeline {
         //stash allowEmpty: true, name: 'source', useDefaultExcludes: false, excludes: ".npm/_cacache/**,.nvm/.git/**"
       }
     }
+    /**
+     Checks formatting / linting.
+     */
+    stage('Lint') {
+      options {
+        timeout(5)
+      }
+      steps {
+       // withGithubNotify(context: 'Linting') {
+          echo 'skipped'
+       // }
+      }
+    }
+    /**
+     Build the main package
+     */
     stage('Build') {
       options {
         timeout(5)
       }
       steps {
-        withGithubNotify(context: 'Build') {
-          //cleanup()
-          withNodeEnv(){
-            dir("${BASE_DIR}"){
-              sh(label: 'Build',script: 'npm run build')
+        //withGithubNotify(context: 'Build') {
+          echo 'skipped'
+        //}
+      }
+    }
+    /**
+     Execute integration tests.
+     */
+    stage('Test') {
+      options {
+        timeout(5)
+      }
+      steps {
+        //withGithubNotify(context: 'Test') {
+          echo 'skipped'
+       //}
+      }
+      post {
+        always {
+          junit(allowEmptyResults: true, keepLongStdio: true, testResults: "${BASE_DIR}/junit.xml")
+        }
+      }
+    }
+    stage('E2e Test') {
+      options {
+        timeout(15)
+      }
+      steps {
+        echo 'skipped'
+      }
+    }
+    /**
+     Publish Docker images.
+     */
+    stage('Publish Docker image'){
+      options {
+        timeout(15)
+      }
+      matrix {
+        agent { label 'ubuntu-18 && immutable' }
+        axes {
+          axis {
+            name 'STACK_VERSION'
+            values '8.0.0-synthetics', '7.10.0-synthetics', '7.11.0-synthetics'
+          }
+        }
+        stages {
+          stage('package'){
+            steps {
+              echo 'skipped'
+            }
+          }
+          stage('observability-ci'){
+            environment {
+              DOCKER_IMG_TAG = "${env.DOCKER_IMG}:${env.GIT_BASE_COMMIT}-${env.STACK_VERSION}"
+              DOCKER_IMG_TAG_BRANCH = "${env.DOCKER_IMG}:${env.BRANCH_NAME}-${env.STACK_VERSION}"
+            }
+            steps {
+              echo 'skipped'
+            }
+          }
+          stage('experimental'){
+            when {
+              branch 'master'
+            }
+            environment {
+              DOCKER_IMG_TAG_BRANCH = "${env.DOCKER_IMG_PUBLIC}:${env.STACK_VERSION}"
+            }
+            steps {
+              echo 'skipped'
             }
           }
         }
@@ -84,8 +172,11 @@ pipeline {
             message 'Should we release a new version?'
             ok 'Yes, we should.'
           }
+          environment {
+            VERSION = ''
+          }
           steps {
-            //cleanup()
+            cleanup()
             withNodeEnv(){
               dir("${BASE_DIR}"){
                 withNpmrc(secret: "${env.NPMRC_SECRET}", path: "${env.WORKSPACE}/${env.BASE_DIR}") {
@@ -108,7 +199,7 @@ pipeline {
           }
           post {
             success {
-              notifyStatus(slackStatus: 'good', subject: "[${env.REPO}] Release '${env.VERSION}' published", body: "Great news, the release has been done successfully. (<${env.RUN_DISPLAY_URL}|Open>). \n Release URL: (<https://preview.npmjs.com/package/@elastic/synthetics/v/${env.VERSION}|${env.VERSION}>)")
+              notifyStatus(slackStatus: 'good', subject: "[${env.REPO}] Release '${env.VERSION}' published", body: "Great news, the release has been done successfully. (<${env.RUN_DISPLAY_URL}|Open>). \n Release URL: (<https://preview.npmjs.com/package/test-2fa/v/${env.VERSION}|${env.VERSION}>)")
             }
             always {
               script {
@@ -125,6 +216,12 @@ pipeline {
       }
     }
   }
+  post {
+    cleanup {
+      //notifyBuildResult(prComment: true)
+      echo 'skipped'
+    }
+  }
 }
 
 def cleanup(){
@@ -134,9 +231,42 @@ def cleanup(){
   unstash 'source'
 }
 
+def withNodeInDockerEnv(Map args=[:], Closure body){
+  docker.image("${NODE_DOCKER_IMAGE}").inside(" --security-opt seccomp=${SECCOMP_FILE}"){
+    withEnv(["HOME=${WORKSPACE}"]) {
+      body()
+    }
+  }
+}
+
 def withNodeEnv(Map args=[:], Closure body){
   withEnv(["HOME=${WORKSPACE}"]) {
     body()
+  }
+}
+
+def pushDockerImage(){
+  dir("${BASE_DIR}"){
+    dockerLogin(secret: "${env.DOCKERELASTIC_SECRET}",
+      registry: "${env.DOCKER_REGISTRY}")
+    sh(label: 'Build Docker image',
+      script: """docker build \
+        -t ${env.DOCKER_IMG_TAG} \
+        -t ${env.DOCKER_IMG_TAG_BRANCH} \
+        --build-arg STACK_VERSION=${env.STACK_VERSION} \
+        --label BRANCH_NAME=${env.BRANCH_NAME} \
+        --label GIT_SHA=${env.GIT_BASE_COMMIT} \
+        --label TIMESTAMP=\$(date +%Y-%m-%d_%H:%M) \
+        .
+    """)
+    retryWithSleep(retries: 3, seconds: 5, backoff: true){
+      if(env.DOCKER_IMG_TAG){
+        sh(label: 'Push Docker image sha',
+          script: "docker push ${env.DOCKER_IMG_TAG}")
+      }
+      sh(label: 'Push Docker image name',
+        script: "docker push ${env.DOCKER_IMG_TAG_BRANCH}")
+    }
   }
 }
 
@@ -150,5 +280,5 @@ def notifyStatus(def args = [:]) {
             tokenCredentialId: 'jenkins-slack-integration-token')
   // transform slack URL format '(<URL|description>)' to 'URL'.
   def bodyEmail = args.body.replaceAll('\\(<', '').replaceAll('\\|.*>\\)', '')
-  // emailext(subject: args.subject, to: 'victor.martinez@elastic.co', body: bodyEmail)
+  //emailext(subject: args.subject, to: 'synthrum@elastic.co', body: bodyEmail)
 }
