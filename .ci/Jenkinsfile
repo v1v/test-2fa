@@ -91,14 +91,14 @@ pipeline {
                 prepareRelease() {
                   sh(script: "npm publish --otp=${env.TOTP_CODE} --tag alpha", label: 'publish to NPM')
                   setEnvVar('VERSION', sh(script: '''node -p "require('./package.json').version"''', returnStdout: true).trim())
-                  sh(script: "npm dist-tag add @elastic/test-2fa@${env.VERSION} latest", label: 'retag latest')
+                  sh(script: "npm dist-tag add @v1v/test-2fa@${env.VERSION} latest", label: 'retag latest')
                 }
               }
             }
           }
           post {
             success {
-              notifyStatus(slackStatus: 'good', subject: "[${env.REPO}] Release '${VERSION}' published", body: "Great news, the release has been done successfully. (<${env.RUN_DISPLAY_URL}|Open>). \n Release URL: (<https://github.com/elastic/apm-agent-rum-js/releases|Here>)")
+              notifyStatus(slackStatus: 'good', subject: "[${env.REPO}] Release '${env.VERSION}' published", body: "Great news, the release has been done successfully. (<${env.RUN_DISPLAY_URL}|Open>). \n Release URL: (<https://github.com/elastic/apm-agent-rum-js/releases|Here>)")
             }
             always {
               script {
