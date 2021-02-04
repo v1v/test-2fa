@@ -42,15 +42,13 @@ pipeline {
         deleteDir()
         gitCheckout(basedir: "${BASE_DIR}")
         retryWithSleep(retries: 3, seconds: 5, backoff: true) {
-          dockerLogin(secret: "${DOCKERELASTIC_SECRET}",
-                      registry: "${DOCKER_REGISTRY}")
           withNodeEnv(){
             dir("${BASE_DIR}"){
               sh(label: 'Download dependencies',script: 'npm install')
             }
           }
         }
-        stash allowEmpty: true, name: 'source', useDefaultExcludes: false, excludes: ".npm/_cacache/**,.nvm/.git/**"
+        //stash allowEmpty: true, name: 'source', useDefaultExcludes: false, excludes: ".npm/_cacache/**,.nvm/.git/**"
       }
     }
     stage('Build') {
@@ -59,7 +57,7 @@ pipeline {
       }
       steps {
         withGithubNotify(context: 'Build') {
-          cleanup()
+          //cleanup()
           withNodeEnv(){
             dir("${BASE_DIR}"){
               sh(label: 'Build',script: 'npm run build')
@@ -90,7 +88,7 @@ pipeline {
         stage('Release CI') {
           options { skipDefaultCheckout() }
           steps {
-            cleanup()
+            //cleanup()
             withNodeEnv(){
               dir("${BASE_DIR}"){
                 prepareRelease() {
