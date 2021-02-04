@@ -110,7 +110,7 @@ pipeline {
       }
       post {
         failure {
-          notifyStatus(slackStatus: 'danger', subject: "[${env.REPO}] Release failed", body: "(<${env.RUN_DISPLAY_URL}|Open>)")
+          notifyStatus(slackStatus: 'danger', subject: "[${env.REPO}] Release '${env.VERSION}' failed", body: "(<${env.RUN_DISPLAY_URL}|Open>)")
         }
       }
     }
