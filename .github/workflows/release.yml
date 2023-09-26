@@ -52,27 +52,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Read NPM vault secrets
-        if: inputs.dry-run == false
-        uses: hashicorp/vault-action@v2.7.3
-        with:
-          method: approle
-          url: ${{ secrets.VAULT_ADDR }}
-          roleId: ${{ secrets.VAULT_ROLE_ID }}
-          secretId: ${{ secrets.VAULT_SECRET_ID }}
-          secrets: |
-            totp/code/npmjs-elasticmachine code | TOTP_CODE
-
-      - name: Configure npm registry
-        uses: elastic/apm-pipeline-library/.github/actions/setup-npmrc@current
-        if: inputs.dry-run == false
-        with:
-          vault-url: ${{ secrets.VAULT_ADDR }}
-          vault-role-id: ${{ secrets.VAULT_ROLE_ID }}
-          vault-secret-id: ${{ secrets.VAULT_SECRET_ID }}
-          secret: secret/jenkins-ci/npmjs/elasticmachine
-          secret-key: token
-
       - name: Create draft release
         env:
           DRY_RUN: ${{ inputs.dry-run }}
