@@ -57,6 +57,12 @@ jobs:
           DRY_RUN: ${{ inputs.dry-run }}
         run: npm run ci:release-draft
 
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ env.GITHUB_TOKEN }}
+        run: |-
+          gh pr create --title "chore(release): publish" --body "As soon as it gets merged the release will be published"
+
       - uses: actions/upload-artifact@v3
         with:
           name: artifacts
