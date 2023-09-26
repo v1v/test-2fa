@@ -6,10 +6,14 @@
     "version": "node scripts/prompt-release",
     "test": "lerna run build && lerna run test",
     "clean": "lerna exec -- rm -rf dist/",
-    "prerelease": "npm test && npm run clean",
-    "release": "sh ./scripts/deploy.sh",
     "release-ci": "lerna publish --otp=${TOTP_CODE} --yes",
-    "github-release": "node scripts/github-release"
+    "prerelease": "npm run clean",
+    "release": "lerna publish && npm run github-release",
+    "release-package": "node scripts/publish-package",
+    "github-release": "node scripts/github-release",
+    "ci:prepare-release": "echo foo",
+    "ci:release": "node ./scripts/ci-release.mjs",
+    "ci:release-draft": "node ./scripts/ci-release.mjs"
   },
   "author": "",
   "publishConfig": {
