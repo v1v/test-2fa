@@ -30,6 +30,14 @@ jobs:
           roleId: ${{ secrets.VAULT_ROLE_ID }}
           secretId: ${{ secrets.VAULT_SECRET_ID }}
 
+      - uses: elastic/apm-pipeline-library/.github/actions/manage-branch@test/locker
+        with:
+          branch: 'master'
+          lock: true
+          owner: v1v
+          repo: test-2fa
+          token: ${{ env.GITHUB_TOKEN }}
+
       - name: Configure git user
         uses: elastic/apm-pipeline-library/.github/actions/setup-git@current
         with:
