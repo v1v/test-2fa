@@ -33,7 +33,7 @@ const { name, version } = require('../packages/test-2fa-bar/package.json')
 const BUILD_DIR = path.join(__dirname, '../packages/test-2fa-bar')
 const GITHUB_URL = 'https://api.github.com/repos/v1v/test-2fa'
 
-function createRelease(token) {
+function createDraftRelease(token) {
   const releaseUrl = `${GITHUB_URL}/releases`
   const urlObj = url.parse(releaseUrl, false)
   const options = Object.assign({}, urlObj, {
@@ -52,7 +52,7 @@ function createRelease(token) {
     tag_name: tagVersion,
     name: tagVersion,
     body: `Please check the changelog - ${changelogUrl}`,
-    draft: false,
+    draft: true,
     prerelease: false
   }
 
@@ -101,7 +101,7 @@ function uploadAssets(uploadUrl, token) {
   })
 }
 
-;(async function startRelease() {
+;(async function startDraftRelease() {
   try {
     var token = process.env['GITHUB_TOKEN']
     if (!token) {
@@ -110,9 +110,9 @@ function uploadAssets(uploadUrl, token) {
       )
     }
     console.log('creating release for the tag - ', version)
-    const response = await createRelease(token)
+    const response = await createDraftRelease(token)
     const parsedResponse = JSON.parse(response)
-    console.log('release created', parsedResponse.url)
+    console.log('release draft created', parsedResponse.url)
     const uploadUrl = parsedResponse['upload_url']
     await uploadAssets(uploadUrl, token)
     console.log('uploaded all assets to the release')
