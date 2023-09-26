@@ -9,7 +9,8 @@
       "allowBranch": [
         "master",
         "lerna",
-        "meta-*"
+        "meta-*",
+        "release*"
       ],
       "message": "chore(release): publish"
     },
@@ -17,7 +18,8 @@
       "allowBranch": [
         "master",
         "lerna",
-        "meta-*"
+        "meta-*",
+        "release*"
       ],
       "conventionalCommits": true,
       "gitRemote": "upstream"
