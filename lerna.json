@@ -22,7 +22,7 @@
         "release*"
       ],
       "conventionalCommits": true,
-      "gitRemote": "upstream"
+      "gitRemote": "origin"
     }
   },
   "ignoreChanges": [
