@@ -43,7 +43,7 @@ async function main() {
     raiseError("The 'GITHUB_TOKEN' env var isn't defined")
   }
 
-  const branch = `release/${version}`
+  const branch = `release/${version}-next`
 
   try {
     await execa('git', ['checkout', '-b', branch], {
