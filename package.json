@@ -12,6 +12,7 @@
     "release-package": "node scripts/publish-package",
     "github-publish-release": "node scripts/github-publish-release",
     "github-draft-release": "node scripts/github-draft-release",
+    "github-release": "node scripts/github-release",
     "ci:prepare-release": "echo foo",
     "ci:release": "node ./scripts/ci-release.mjs",
     "ci:release-draft": "node ./scripts/ci-release-draft.mjs",
