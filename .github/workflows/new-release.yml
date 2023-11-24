@@ -16,14 +16,10 @@ jobs:
       # Needed to write the release changelog
       contents: write
     env:
+      DRY_RUN: false
       ELASTIC_CDN_BUCKET_NAME: apm-rum-357700bc
       ELASTIC_CDN_CREDENTIALS: secret/gce/elastic-cdn/service-account/apm-rum-admin
       SLACK_BUILD_MESSAGE: "Build: (<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|here>)"
-    services:
-      verdaccio:
-        image: verdaccio/verdaccio:5
-        ports:
-          - 4873:4873
     steps:
       - name: Configure github token
         uses: elastic/apm-pipeline-library/.github/actions/github-token@current
