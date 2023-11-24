@@ -80,7 +80,7 @@ async function main() {
 
   try {
     await execa('gh',
-      ['pr', 'create', '--title', 'release ' + version, '--body', 'When merged then a new release happens', '--label', 'release', '--reviewer', 'v1v'], {
+      ['pr', 'create', '--title', 'release ' + version, '--body', 'When merged then a new release happens', '--reviewer', 'v1v'], {
       stdin: process.stdin,
       env: {
         GH_TOKEN: githubToken
