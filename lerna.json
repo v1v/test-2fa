@@ -10,7 +10,7 @@
         "master",
         "lerna",
         "meta-*",
-        "release*"
+        "release/*"
       ],
       "message": "chore(release): publish"
     },
@@ -19,7 +19,7 @@
         "master",
         "lerna",
         "meta-*",
-        "release*"
+        "release/*"
       ],
       "conventionalCommits": true,
       "gitRemote": "origin"
