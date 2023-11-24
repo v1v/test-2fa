@@ -8,8 +8,8 @@ on:
     branches:
       - main
     paths:
-      - 'CHANGELOG.md'
-      - 'package.json'
+      - '**/CHANGELOG.md'
+      - '**/package.json'
 
 permissions:
   contents: read
