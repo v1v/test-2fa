@@ -31,6 +31,11 @@ const require = createRequire(import.meta.url)
 //const { version } = require('../packages/rum/package.json')
 const { version } = require('../packages/test-2fa-bar/package.json')
 
+function raiseError(msg) {
+  console.log(msg)
+  process.exit(1)
+}
+
 // Script logic
 async function main() {
   const githubToken = process.env.GITHUB_TOKEN
@@ -57,7 +62,7 @@ async function main() {
       .pipeStdout(process.stdout)
       .pipeStderr(process.stderr)
   } catch (err) {
-    raiseError('Failed to create git branch')
+    raiseError('Failed to push git branch')
   }
 
   try {
