@@ -28,8 +28,8 @@ import * as process from 'node:process'
 import { createRequire } from 'node:module'
 const require = createRequire(import.meta.url)
 // TODO: change this
-//var { version } = require('../packages/rum/package.json')
-var { version } = require('../packages/test-2fa-bar/package.json')
+//const { version } = require('../packages/rum/package.json')
+const { version } = require('../packages/test-2fa-bar/package.json')
 
 function raiseError(msg) {
   console.log(msg)
@@ -79,9 +79,8 @@ async function main() {
   }
 
   try {
-    var { version } = require('../packages/test-2fa-bar/package.json')
     await execa('gh',
-      ['pr', 'create', '--title', 'release ' + newVersion, '--body', 'When merged then a new release happens', '--reviewer', 'v1v'], {
+      ['pr', 'create', '--fill-first'], {
       stdin: process.stdin,
       env: {
         GH_TOKEN: githubToken
