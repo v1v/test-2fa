@@ -15,11 +15,6 @@ jobs:
     permissions:
       # Needed to write the release changelog
       contents: write
-    services:
-      verdaccio:
-        image: verdaccio/verdaccio:5
-        ports:
-          - 4873:4873
     steps:
       - name: Configure github token
         uses: elastic/apm-pipeline-library/.github/actions/github-token@current
