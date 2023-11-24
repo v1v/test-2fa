@@ -23,7 +23,9 @@
  *
  */
 
-const { version } = require('../packages/rum/package.json')
+// TODO: change this
+//const { version } = require('../packages/rum/package.json')
+const { version } = require('../packages/test-2fa-bar/package.json')
 import { execa } from 'execa'
 const process = require('node:process')
 
@@ -57,7 +59,8 @@ async function main() {
   }
 
   try {
-    await execa('gh', ['pr', 'create', '--title', 'release ' + version, '--body', 'When merged then a new release happens', '--label', 'release', '--reviewer', 'v1v'], {
+    await execa('gh',
+      ['pr', 'create', '--title', 'release ' + version, '--body', 'When merged then a new release happens', '--label', 'release', '--reviewer', 'v1v'], {
       stdin: process.stdin,
       env: {
         GH_TOKEN: githubToken
