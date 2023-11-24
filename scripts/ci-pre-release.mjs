@@ -37,8 +37,21 @@ async function main() {
   if (githubToken == null || githubToken === '') {
     raiseError("The 'GITHUB_TOKEN' env var isn't defined")
   }
+
+  const branch = `release/${version}`
+
   try {
-    await execa('git', ['checkout', '-b', 'release/'+version], {
+    await execa('git', ['checkout', '-b', branch], {
+      stdin: process.stdin
+    })
+      .pipeStdout(process.stdout)
+      .pipeStderr(process.stderr)
+  } catch (err) {
+    raiseError('Failed to create git branch')
+  }
+
+  try {
+    await execa('git', ['push', 'origin', branch], {
       stdin: process.stdin
     })
       .pipeStdout(process.stdout)

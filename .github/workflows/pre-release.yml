@@ -42,11 +42,6 @@ jobs:
           fetch-depth: 0
           token: ${{ env.GITHUB_TOKEN }}
 
-      - name: Create Git branch (something unique)
-        run: |-
-          git checkout -b release-$GITHUB_RUN_ID
-          git push origin release-$GITHUB_RUN_ID
-
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
