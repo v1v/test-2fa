@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0-rc.12](https://github.com/v1v/test-2fa/compare/test-2fa-foo@1.3.0-rc.9...test-2fa-foo@1.4.0-rc.12) (2023-11-24)
+
+**Note:** Version bump only for package test-2fa-foo
+
+
+
+
+
 # [1.4.0-rc.11](https://github.com/v1v/test-2fa/compare/test-2fa-foo@1.3.0-rc.9...test-2fa-foo@1.4.0-rc.11) (2023-11-24)
 
 **Note:** Version bump only for package test-2fa-foo
