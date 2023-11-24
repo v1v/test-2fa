@@ -52,11 +52,6 @@ jobs:
       - name: Create PR with the required changes to be released
         run: npm run ci:pre-release
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: artifacts
-          path: packages/test-2fa-bar
-
   status:
     if: always()
     needs:
