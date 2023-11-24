@@ -4,6 +4,7 @@
 name: new-release
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
