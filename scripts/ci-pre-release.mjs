@@ -28,8 +28,8 @@ import * as process from 'node:process'
 import { createRequire } from 'node:module'
 const require = createRequire(import.meta.url)
 // TODO: change this
-//const { version } = require('../packages/rum/package.json')
-const { version } = require('../packages/test-2fa-bar/package.json')
+//const { oldVersion } = require('../packages/rum/package.json')
+const { oldVersion } = require('../packages/test-2fa-bar/package.json')
 
 function raiseError(msg) {
   console.log(msg)
@@ -43,7 +43,7 @@ async function main() {
     raiseError("The 'GITHUB_TOKEN' env var isn't defined")
   }
 
-  const branch = `release/${version}-next`
+  const branch = `release/${oldVersion}-next`
 
   try {
     await execa('git', ['checkout', '-b', branch], {
@@ -79,8 +79,9 @@ async function main() {
   }
 
   try {
+    const { newVersion } = require('../packages/test-2fa-bar/package.json')
     await execa('gh',
-      ['pr', 'create', '--title', 'release ' + version, '--body', 'When merged then a new release happens', '--reviewer', 'v1v'], {
+      ['pr', 'create', '--title', 'release ' + newVersion, '--body', 'When merged then a new release happens', '--reviewer', 'v1v'], {
       stdin: process.stdin,
       env: {
         GH_TOKEN: githubToken
