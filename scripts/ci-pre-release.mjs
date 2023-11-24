@@ -22,12 +22,11 @@
  * THE SOFTWARE.
  *
  */
-
 // TODO: change this
 //const { version } = require('../packages/rum/package.json')
-const { version } = require('../packages/test-2fa-bar/package.json')
 import { execa } from 'execa'
-const process = require('node:process')
+import * as process from 'node:process'
+import { version } from '../packages/test-2fa-bar/package.json'
 
 // Script logic
 async function main() {
