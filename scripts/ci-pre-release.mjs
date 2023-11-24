@@ -86,12 +86,11 @@ async function main() {
         GH_TOKEN: githubToken
       }
     })
-      .pipeStdout(process.stdout)
+      .pipeStdout('.pr.txt')
       .pipeStderr(process.stderr)
   } catch (err) {
     raiseError('Failed to create GitHub PR')
   }
-
 }
 
 // Entrypoint
