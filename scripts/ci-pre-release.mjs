@@ -56,17 +56,7 @@ async function main() {
   }
 
   try {
-    await execa('git', ['push', 'origin', branch], {
-      stdin: process.stdin
-    })
-      .pipeStdout(process.stdout)
-      .pipeStderr(process.stderr)
-  } catch (err) {
-    raiseError('Failed to push git branch')
-  }
-
-  try {
-    await execa('npx', ['lerna', 'version', '--yes', '--git-tag-command', 'echo "no-tag-creation-for-%s"'], {
+    await execa('npx', ['lerna', 'version', '--yes', '--no-push'], {
       stdin: process.stdin,
       env: {
         GH_TOKEN: githubToken
@@ -76,6 +66,26 @@ async function main() {
       .pipeStderr(process.stderr)
   } catch (err) {
     raiseError('Failed to version npm')
+  }
+
+  try {
+    await execa('git', ['commit', '-a', '-m', '"chore(release): prepare publish"'], {
+      stdin: process.stdin
+    })
+      .pipeStdout(process.stdout)
+      .pipeStderr(process.stderr)
+  } catch (err) {
+    raiseError('Failed to commit git changes')
+  }
+
+  try {
+    await execa('git', ['push', 'origin', branch], {
+      stdin: process.stdin
+    })
+      .pipeStdout(process.stdout)
+      .pipeStderr(process.stderr)
+  } catch (err) {
+    raiseError('Failed to push git branch')
   }
 
   try {
