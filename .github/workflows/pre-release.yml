@@ -49,6 +49,8 @@ jobs:
           if [ -e .pr.txt ] ; then
             echo "pr=$(cat .pr.txt)" >> "$GITHUB_OUTPUT"
           fi
+          git --no-pager diff
+          git --no-pager status
 
       - if: ${{ success() }}
         uses: elastic/apm-pipeline-library/.github/actions/slack-message@current
