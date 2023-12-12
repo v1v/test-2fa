@@ -63,7 +63,7 @@ async function main() {
       .pipeStderr(process.stderr)
   } catch (err) {
     raiseError('Failed to push git branch')
-  },
+  }
 
   try {
     await execa('npx', ['lerna', 'version', '--yes', '--git-tag-command', 'echo "no-tag-creation-for-%s"'], {
