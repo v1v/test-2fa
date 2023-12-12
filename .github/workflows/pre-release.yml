@@ -48,6 +48,7 @@ jobs:
           npm run ci:pre-release
           if [ -e .pr.txt ] ; then
             echo "pr=$(cat .pr.txt)" >> "$GITHUB_OUTPUT"
+            rm .pr.txt
           fi
           git --no-pager diff
           git --no-pager status

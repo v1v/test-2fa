@@ -22,8 +22,7 @@
         "release/*"
       ],
       "conventionalCommits": true,
-      "gitRemote": "origin",
-      "gitTagCommand": "echo no-tag-creation-for-%s"
+      "gitRemote": "origin"
     }
   },
   "ignoreChanges": [
