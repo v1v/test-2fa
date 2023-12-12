@@ -69,16 +69,6 @@ async function main() {
   }
 
   try {
-    await execa('git', ['commit', '-a', '-m', '"chore(release): prepare publish"'], {
-      stdin: process.stdin
-    })
-      .pipeStdout(process.stdout)
-      .pipeStderr(process.stderr)
-  } catch (err) {
-    raiseError('Failed to commit git changes')
-  }
-
-  try {
     await execa('git', ['push', 'origin', branch], {
       stdin: process.stdin
     })
