@@ -1,6 +1,6 @@
 {
   "name": "test-2fa-bar",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "",
   "main": "test.js",
   "scripts": {

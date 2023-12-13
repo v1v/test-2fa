@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0](https://github.com/v1v/test-2fa/compare/test-2fa-foo@1.3.0-rc.9...test-2fa-foo@3.3.0) (2023-12-13)
+
+
+### Features
+
+* change versioning ([#61](https://github.com/v1v/test-2fa/issues/61)) ([6cf03f6](https://github.com/v1v/test-2fa/commit/6cf03f675c4eb78e3766cb29e9f3c31765dbdef8))
+
+
+
+
+
 # [3.2.0](https://github.com/v1v/test-2fa/compare/test-2fa-foo@1.3.0-rc.9...test-2fa-foo@3.2.0) (2023-12-13)
 
 
