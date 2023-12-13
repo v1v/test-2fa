@@ -3,7 +3,7 @@ class Base {
 
     init() {
         var configService
-        configService.setVersion('2.0.1')
+        configService.setVersion('2.1.0')
         // a new line for testing code changes
     }
 }
