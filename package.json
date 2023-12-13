@@ -17,8 +17,7 @@
     "ci:release": "node ./scripts/ci-release.mjs",
     "ci:release-draft": "node ./scripts/ci-release-draft.mjs",
     "ci:release-publish": "node ./scripts/ci-release-publish.mjs",
-    "ci:pre-release": "node ./scripts/ci-pre-release.mjs",
-    "prepublishOnly": "git checkout --force master~1"
+    "ci:pre-release": "node ./scripts/ci-pre-release.mjs"
   },
   "author": "",
   "publishConfig": {
