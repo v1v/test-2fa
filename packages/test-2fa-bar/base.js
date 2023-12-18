@@ -5,6 +5,7 @@ class Base {
         var configService
         configService.setVersion('2.1.3')
         // a new line for testing code changes
+        // a new line for testing code changes
     }
 }
 
