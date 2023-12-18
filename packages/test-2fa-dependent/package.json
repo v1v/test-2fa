@@ -1,0 +1,25 @@
+{
+  "name": "test-2fa-dependent",
+  "version": "1.0.0",
+  "description": "A new dependent package",
+  "keywords": [
+    "test"
+  ],
+  "author": "Victor Martinez <VictorMartinezRubio@gmail.com>",
+  "homepage": "https://github.com/v1v/test-2fa#readme",
+  "license": "ISC",
+  "main": "lib/test-2fa-dependent.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "dependencies": {
+    "@v1v/test-2fa-bar": "file:../test-2fa-bar"
+  }
+}
